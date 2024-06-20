@@ -19,6 +19,7 @@ export const useAddNewTask = (postAction?: () => void) => {
         mutationFn: AddNewTask,
         onSuccess() {
             toast({
+                variant:"success",
                 title: "Task Added",
                 description: "New Task Added Successfully",
             });
@@ -26,6 +27,7 @@ export const useAddNewTask = (postAction?: () => void) => {
         },
         onError(err: any) {
             toast({
+                variant:"destructive",
                 title: 'Error While Submission',
                 description: err?.response?.data?.message || "Error in task submission"
             })
@@ -41,6 +43,7 @@ export const useDeleteTask = (postAction?: () => void) => {
         mutationFn: DeleteTask,
         onSuccess: (data) => {
             toast({
+                variant:"success",
                 title: "Task Deleted",
                 description: data?.data?.message || "Task Deleted Successfully!"
             })
@@ -48,6 +51,7 @@ export const useDeleteTask = (postAction?: () => void) => {
         },
         onError: (err: any) => {
             toast({
+                variant:"destructive",
                 title: "Failed To Delete!",
                 description: err?.response?.data?.message || "Failed to Delete Task"
             })

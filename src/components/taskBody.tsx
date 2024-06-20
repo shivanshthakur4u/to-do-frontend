@@ -2,79 +2,16 @@ import { Check, Plus } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import NoTodo from "../../public/Notask.png";
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import AddTaskForm from "./AddTaskForm";
 import TaskAvailableScreen from "./TaskAvailabelScreen";
 import Image from "next/image";
 import { useGetAlltask } from "@/lib/hooks/useTasks";
+import TaskCardLoader from "./TaskCardLoader";
 
 
 
-const demotaskData = [
-  {
-    id: "1",
-    title: "Buy groceries, but not the milk",
-    completed: false,
-    deleted: false,
-    taskPriority: "high",
-    taskCategory: "official",
-    taskTime: "12:30 PM",
-  },
-  {
-    id: "2",
-    title: "Buy groceries, chocolates",
-    completed: false,
-    deleted: false,
-    taskPriority: "medium",
-    taskCategory: "personal",
-    taskTime: "12:30 PM",
-  },
-  {
-    id: "3",
-    title: "Buy groceries, milk",
-    completed: false,
-    deleted: false,
-    taskPriority: "normal",
-    taskCategory: "general",
-    taskTime: "12:30 PM",
-  },
-  {
-    id: "4",
-    title: "Buy groceries, milk",
-    completed: false,
-    deleted: false,
-    taskPriority: "normal",
-    taskCategory: "general",
-    taskTime: "12:30 PM",
-  },
-  {
-    id: "5",
-    title: "Buy groceries, milk",
-    completed: false,
-    deleted: false,
-    taskPriority: "normal",
-    taskCategory: "general",
-    taskTime: "12:30 PM",
-  },
-  {
-    id: "6",
-    title: "Buy groceries, milk",
-    completed: false,
-    deleted: false,
-    taskPriority: "normal",
-    taskCategory: "general",
-    taskTime: "12:30 PM",
-  },
-  {
-    id: "7",
-    title: "Buy groceries, milk",
-    completed: false,
-    deleted: false,
-    taskPriority: "normal",
-    taskCategory: "general",
-    taskTime: "12:30 PM",
-  },
-];
+
 
 const NotaskScreen = () => {
   return (
@@ -89,31 +26,42 @@ const NotaskScreen = () => {
 
 
 
-const TaskBody = ({debouncedSearch}:{debouncedSearch:string}) => {
+const TaskBody = ({ debouncedSearch }: { debouncedSearch: string }) => {
   const [taskName, setTaskName] = React.useState("");
   const [showAddForm, setShowAddForm] = React.useState(false);
   const { data, isLoading } = useGetAlltask(debouncedSearch);
 
-  console.log("data received:", data);
+  // console.log("data received:", data);
+  //  console.log("task name:", taskName);
+
+  const handleChange = useCallback((e: any) => {
+    setTaskName(e.target.value);
+  }, []);
   return (
     <>
       <div className="flex flex-col items-center mt-8 relative w-full h-full">
-        {!isLoading && data?.tasks?.length > 0 ? (
-          <TaskAvailableScreen taskData={data?.tasks} />
-        ) : (
-          <div className="flex items-center justify-center">
-            <NotaskScreen />
-          </div>
-        )}
+        {isLoading ?
+          <div className="flex flex-col gap-2 w-full">
+            {Array(4)
+              .fill(undefined)
+              .map((_, index) => (
+                <TaskCardLoader key={index} />
+              ))}
+
+          </div> : !isLoading && data?.tasks?.length > 0 ? (
+            <TaskAvailableScreen taskData={data?.tasks} />
+          ) : (
+            <div className="flex items-center justify-center">
+              <NotaskScreen />
+            </div>
+          )}
       </div>
       <div className="flex items-center justify-center">
         <div className="flex sm:w-[50%] w-[90%] h-14 items-center justify-center  absolute bottom-2">
           <Plus className="absolute left-2" />
           <Input
             className="border-[#747264] h-full focus:border-none pl-10 pr-20 focus:shadow-lg hover:shadow-lg"
-            onChange={(e) => {
-              setTaskName(e.target.value);
-            }}
+            onChange={handleChange}
           />
           {taskName.length > 5 && (
             <Button

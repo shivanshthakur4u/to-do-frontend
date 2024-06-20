@@ -16,10 +16,10 @@ const queryClient = new QueryClient()
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <main className={` ${lato.className} font-sans`}>
-    <QueryClientProvider client={queryClient}>
-      <Component {...pageProps} />
-      <Toaster />
-    </QueryClientProvider>
-  </main>
+      <QueryClientProvider client={queryClient}>
+        <Component {...pageProps} />
+        <Toaster />
+      </QueryClientProvider>
+    </main>
   )
 }

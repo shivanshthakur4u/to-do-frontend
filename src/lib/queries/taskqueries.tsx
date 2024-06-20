@@ -5,7 +5,7 @@ import { FormDataType } from "../types/tasks"
 // get all tasks
 export const getAllTask = async (search:string) => {
     const response = await AxiosInstance({
-        url: `getTasks?q=${search}`,
+        url: `/tasks/getTasks?q=${search}`,
         method: "GET",
     })
     return response.data
@@ -14,7 +14,7 @@ export const getAllTask = async (search:string) => {
 // add new tasks
 export const AddNewTask = async (formData: FormDataType) => {
     return AxiosInstance({
-        url: "addTask",
+        url: "/tasks/addTask",
         method: "POST",
         data: formData,
     })
@@ -24,7 +24,7 @@ export const AddNewTask = async (formData: FormDataType) => {
 // delete task 
 export const DeleteTask = async(TaskId:string)=>{
     return AxiosInstance({
-        url:`deleteTask/${TaskId}`,
+        url:`/tasks/deleteTask/${TaskId}`,
         method:"DELETE"
     })
 }

@@ -30,6 +30,7 @@ const DeleteConfirmPopup = ({ open, setOpen, selectedTaskId }: DeleteConfirmPopu
     const handleDeleteTask = () => {
         if (selectedTaskId !== "") {
             deleteTask(selectedTaskId)
+            setOpen(false);
         }
     }
     return (
@@ -42,15 +43,15 @@ const DeleteConfirmPopup = ({ open, setOpen, selectedTaskId }: DeleteConfirmPopu
                         from the server.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter className="flex gap-2">
+                <AlertDialogFooter className="flex flex-row gap-2 w-full">
                     <Button
                         variant="link"
-                        className="hover:no-underline hover:text-blue-500"
+                        className="hover:no-underline hover:text-blue-500 w-full"
                         onClick={() => setOpen(false)}
                     >
                         Cancel
                     </Button>
-                    <Button variant="destructive" onClick={handleDeleteTask}>
+                    <Button variant="destructive" onClick={handleDeleteTask} className="w-full">
                         {
                             (isPending && !isError) ? <div className="flex gap-2">
                                 <Loader2 className=" animate-spin w-4 h-4 mr-2" /> Deleting...

@@ -102,28 +102,29 @@ const AddTaskForm = ({ open, setShowAddForm, taskName }: AddtaskForm) => {
     ];
 
     const formSchema = z.object({
-        date: z.string(),
-        time: z.string(),
-        category: z.string(),
-        priority: z.string(),
+        date: z.string().nonempty("Due date is required"),
+        time: z.string().nonempty("Time is required"),
+        category: z.string().nonempty("Task category is required"),
+        priority: z.string().nonempty("Task priority is required"),
         description: z.string().min(10,
             { message: "Description must be 10 Character longer" }),
-        title: z.string().min(5, { message: "task name must be more than 5 character longer" })
+        title: z.string()
     });
 
     // console.log("Task name received:", taskName)
 
-    const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            title: taskName,
             date: "",
             time: "",
             category: "",
             priority: "",
             description: "",
-            title: taskName,
         },
     });
+
 
     const postAction = () => {
         queryclient.invalidateQueries({ queryKey: ["all-tasks"] });
@@ -134,10 +135,11 @@ const AddTaskForm = ({ open, setShowAddForm, taskName }: AddtaskForm) => {
     const { mutate: addNewTask, isPending, isSuccess } = useAddNewTask(postAction)
 
     function onSubmit(values: any) {
-        console.log("Form values:", values);
-        // If using react-hook-form version 7 or above
+        // console.log("Form values:", values);
+        form.setValue('title', taskName)
         const formValues = form.getValues();
         console.log("Form values using getValues:", formValues);
+
         addNewTask(formValues)
     }
 
@@ -154,32 +156,12 @@ const AddTaskForm = ({ open, setShowAddForm, taskName }: AddtaskForm) => {
             >
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 mt-3">
-                        <div className="flex gap-4 items-center w-full h-12">
-                            <div className="w-3 h-3 rounded-full bg-[#3b3b3b]  self-center mt-5" />
+                        <div className="flex gap-4 items-center w-full">
+                            <div className="w-3 h-3 rounded-full bg-[#3b3b3b] self-center  mt-1" />
                             <div className="text-3xl font-bold w-full">
-                                <FormField
-                                    control={form.control}
-                                    name="title"
-                                    rules={{
-                                        required: {
-                                            value: true,
-                                            message: "Task Title is required",
-                                        },
-                                        minLength: {
-                                            value: 5,
-                                            message: "Title must be at least 5 characters long.",
-                                        }
-                                    }}
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-grow flex-col pt-4">
-                                            <Input
-                                                defaultValue={taskName}
-                                                placeholder="Enter Task Name (required)"
-                                                {...field} />
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                                {
+                                    taskName
+                                }
                             </div>
                         </div>
 
@@ -355,21 +337,31 @@ const AddTaskForm = ({ open, setShowAddForm, taskName }: AddtaskForm) => {
                         <FormField
                             control={form.control}
                             name="description"
+                            rules={{
+                                required: {
+                                    value: true,
+                                    message: "Description is required",
+                                },
+                                minLength: {
+                                    value: 10,
+                                    message: "Description must be at least 10 characters long.",
+                                },
+                            }}
                             render={({ field }) => (
                                 <FormItem className="flex flex-grow flex-col pt-4">
-                                    <FormLabel>Task Note</FormLabel>
+                                    <FormLabel>Description</FormLabel>
                                     <FormControl>
                                         <Textarea
-                                            placeholder="Write a note (Optional)"
-                                            className="resize-none"
-                                            {...field}
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            placeholder="Enter Task Description (required)"
                                         />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
-                        <div className=" self-end justify-end flex">
+                        <div className="self-end justify-end flex">
                             <div className="flex gap-3">
                                 <Button
                                     type="button"
@@ -382,8 +374,8 @@ const AddTaskForm = ({ open, setShowAddForm, taskName }: AddtaskForm) => {
                                 <Button type="submit" className="flex gap-2">
                                     {
                                         isPending && !isSuccess ? (
-                                            <div>
-                                                <Loader2 className="animate-spin w-2 h-2 mr-2" /> Submitting
+                                            <div className="flex items-center">
+                                                <Loader2 className="animate-spin w-2 h-2 mr-2" /> <span>Submitting</span>
                                             </div>
                                         ) : (
                                             <div className="flex gap-2">
@@ -394,9 +386,6 @@ const AddTaskForm = ({ open, setShowAddForm, taskName }: AddtaskForm) => {
                                             </div>
                                         )
                                     }
-
-                                  
-
                                 </Button>
 
                             </div>

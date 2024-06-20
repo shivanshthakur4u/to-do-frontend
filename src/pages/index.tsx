@@ -13,10 +13,10 @@ export default function Home() {
     <main
       className={`px-5 pt-5 pb-0 flex flex-col w-full h-screen ${inter.className}`}
     >
-       <Header setSearchQuery={setSearchQuery}/>
-     {/* body */}
-     <TaskBody debouncedSearch={debouncedSearch} />
+      <Header setSearchQuery={setSearchQuery} />
       
+      <TaskBody debouncedSearch={debouncedSearch} />
+
     </main>
   );
 }
